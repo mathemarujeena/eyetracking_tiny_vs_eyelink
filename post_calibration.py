@@ -29,20 +29,6 @@ def get_start_end_time(filename, pattern_start, pattern_end):
 
     return start_time, end_time
 
-# def get_start_end_time(filename, pattern_start, pattern_end):
-#     start_time = []
-#     end_time = []
-#     with open(filename, 'r') as file:
-#         for line_number, line in enumerate(file, 1):
-#             for i in range(len(pattern_start)):
-#                 if re.search(pattern_start[i], line):
-#                     start_time.append(line.strip().split(' ')[0])
-#                 if re.search(pattern_end[i], line):
-#                     end_time.append(line.strip().split(' ')[0])
-
-#     return start_time, end_time
-
-
 def filter_start_end_time(data, start_time, end_time):
     """Filter data based on start and end time."""
     filtered_data = data[(data['Time'] >= float(start_time)) & (data['Time'] <= float(end_time))]
@@ -87,14 +73,6 @@ def interpolate_x(asc_start_time,asc_end_time, tiny_start_time, tiny_end_time, t
     """
     return asc_start_time + (asc_end_time - asc_start_time) * ((tiny_times - tiny_start_time) / (tiny_end_time - tiny_start_time))
 
-# def unix_to_eyelink(unix_timestamp, tiny_timestamp, eyelink_event_ms):
-#     eyelink_time = np.array([x.split('\t')[1] for x in eyelink_event_ms])
-#     eyelink_event_sec = eyelink_time.astype(float)/1000.0
-#     offset = np.mean(tiny_timestamp.astype(float) - eyelink_event_sec)  # seconds
-#     eyelink_timestamp_ms = (unix_timestamp - offset) * 1000.0
-#     return round(eyelink_timestamp_ms, 2)
-
-
 def remove_blinks(df_asc_b, df_tiny_b):
     # Get all timestamps where state is 0 (blink)
     blink_times = df_asc_b.loc[df_asc_b['state'] == 0, 'Time'].values
@@ -132,8 +110,6 @@ def remove_blinks(df_asc_b, df_tiny_b):
         mask_small &= ~((df_tiny_b['eyelink_time'] >= start) & (df_tiny_b['eyelink_time'] <= end))
     df_tiny_b_filtered = df_tiny_b[mask_small].copy()
 
-    # print("Large dataset: original {} rows, filtered {} rows".format(len(df_asc_b), len(df_asc_b_filtered)))
-    # print("Small dataset: original {} rows, filtered {} rows".format(len(df_tiny_b), len(df_tiny_b_filtered)))  
 
     return df_asc_b_filtered, df_tiny_b_filtered
 
